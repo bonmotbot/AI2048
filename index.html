@@ -39,7 +39,7 @@ body {
 function xhrListener () {
   var bookmarklet = document.getElementById('bookmarklet');
   bookmarklet.setAttribute('href', this.responseText);
-  bookmarklet.classlist.remove('disabled');
+  bookmarklet.classList.remove('disabled');
 }
 
 var xhr = new XMLHttpRequest();
