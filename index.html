@@ -46,13 +46,17 @@ function jsLoad() {
   xhr.onload = jsCompiled;
   xhr.open("POST", "http://closure-compiler.appspot.com/compile", true);
   xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-  xhr.send("compilation_level=ADVANCED_OPTIMIZATIONS&output_format=text&js_code="
-    + encodeURIComponent(this.responseText));
+  xhr.send("compilation_level=ADVANCED_OPTIMIZATIONS"
+    + "&output_format=text"
+    + "&output_info=compiled_code"
+    + "&js_code="+ encodeURIComponent(this.responseText));
 }
 
 function jsCompiled() {
   var bookmarklet = document.getElementById('bookmarklet');
-  bookmarklet.setAttribute('href', this.responseText);
+  bookmarklet.setAttribute('href', 'javascript:(function(){'
+    + this.responseText
+    + '})();');
   bookmarklet.classList.remove('disabled');
 }
 </script>
