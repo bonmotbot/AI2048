@@ -43,11 +43,11 @@ xhr.send();
 
 function jsLoad() {
   var xhr = new XMLHttpRequest();
-  xhr.onload = jsLoad;
+  xhr.onload = jsCompiled;
   xhr.open("POST", "http://closure-compiler.appspot.com/compile", true);
   xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-  xhr.send("compilation_level=ADVANCED_OPTIMIZATIONS,output_format=text,js_code="
-    + this.responseText);
+  xhr.send("compilation_level=ADVANCED_OPTIMIZATIONS&output_format=text&js_code="
+    + encodeURIComponent(this.responseText));
 }
 
 function jsCompiled() {
