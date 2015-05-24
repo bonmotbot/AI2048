@@ -262,12 +262,12 @@ function getMaxAction(board, depth, startTime, maxMoveTime) {
   for (var i = 0; i < 4; i++) {
     var option = moveBoard(board, i);
     if (!boardsEqual(option, board)) {
-      var expectedValue = getExpectedValue(option, depth, startTime, maxMoveTime);
-      if (expectedValue < 0) {
+      var minValue = getMinValue(option, depth, startTime, maxMoveTime);
+      if (minValue < 0) {
         return -1;
       }
-      if (expectedValue > max) {
-        max = expectedValue;
+      if (minValue > max) {
+        max = minValue;
         action = i;
       }
     }
@@ -297,18 +297,18 @@ function getMaxValue(board, depth, startTime, maxMoveTime) {
     }
     var option = moveBoard(board, i);
     if (!boardsEqual(option, board)) {
-      var expectedValue = getExpectedValue(option, depth, startTime, maxMoveTime);
-      if (expectedValue < 0) {
-        return expectedValue;
+      var minValue = getMinValue(option, depth, startTime, maxMoveTime);
+      if (minValue < 0) {
+        return minValue;
       }
-      max = Math.max(max, expectedValue);
+      max = Math.max(max, minValue);
     }
   }
   MAX_VALUES[key] = max;
   return max;
 }
 
-function getExpectedValue(board, depth, startTime, maxMoveTime) {
+function getMinValue(board, depth, startTime, maxMoveTime) {
   if (!depth) {
     return getValue(board);
   }
@@ -316,10 +316,10 @@ function getExpectedValue(board, depth, startTime, maxMoveTime) {
     return -1;
   }
   var options = fillBoardOptions(board);
-  if (!options) {
+  if (!options.length) {
     return getValue(board);
   }
-  var total = 0;
+  var min = Infinity;
   for (var i = 0; i < options.length; i++) {
     if (Date.now() - startTime > maxMoveTime) {
       return -1;
@@ -328,9 +328,9 @@ function getExpectedValue(board, depth, startTime, maxMoveTime) {
     if (maxValue < 0) {
       return maxValue;
     }
-    total += maxValue;
+    min = Math.min(min, maxValue);
   }
-  return total / options.length;
+  return min;
 }
 
 function solve(games, maxMoveTime, record) {
