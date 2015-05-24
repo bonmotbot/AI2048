@@ -140,36 +140,6 @@ function copyBoard(board) {
   return newBoard;
 }
 
-function oneBoardEquals(boards, b) {
-  for (var i = 0; i < boards.length; i++) {
-    if (boardsEqual(boards[i], b)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function randomMove(count) {
-  count = count || 20;
-  var direction = Math.floor(Math.random() * 4);
-  var board = currentBoard();
-  //console.log(getValue(board));
-  var expectedBoard = moveBoard(board, direction);
-  var options = boardsEqual(expectedBoard, board)
-      ? [board]
-      : fillBoardOptions(expectedBoard);
-  move(direction);
-  //console.log(getDirectionName(direction));
-  setTimeout(function() {
-    if(!oneBoardEquals(options, currentBoard())) {
-      console.log(expectedBoard, currentBoard(), options);
-    }
-    if (count > 1) {
-      randomMove(count - 1);
-    }
-  }, 100);
-}
-
 function getValue(board) {
   var value = 0;
   var dx = 0;
@@ -199,57 +169,6 @@ function getMaxTile(board) {
     }
   }
   return max;
-}
-
-function getMaxTilePathLength(board) {
-  var longest = [[],[],[],[]];
-
-  function getLongest(x, y) {
-    if (longest[x][y] != null) {
-      return longest[x][y];
-    }
-    if (!board[x][y]) {
-      longest[x][y] = 0;
-      return longest[x][y];
-    }
-    var neighbors = getNeighbors(x, y);
-    var maxNeighborLength = 0;
-    for (var i = 0; i < neighbors.length; i++) {
-      var n = neighbors[i];
-      if (board[n[0]][n[1]] * 2 == board[x][y]) {
-        maxNeighborLength = Math.max(maxNeighborLength, getLongest(n[0], n[1]));
-      }
-    }
-    longest[x][y] = maxNeighborLength + 1;
-    return longest[x][y];
-  }
-
-  var max = 0;
-  var m =[];
-  for (var x = 0; x < 4; x++) {
-    for (var y = 0; y < 4; y++) {
-      if (board[x][y] > max) {
-        max = board[x][y];
-        m = [x, y];
-      }
-    }
-  }
-  return getLongest(m[0], m[1]);
-}
-
-function getNeighbors(x, y) {
-  var neighbors = [];
-  for (var nx = x - 1; nx <= x + 1; nx += 2) {
-    if (nx >= 0 && nx <= 3) {
-      neighbors.push([nx, y]);
-    }
-  }
-  for (var ny = y - 1; ny <= y + 1; ny += 2) {
-    if (ny >= 0 && ny <= 3) {
-      neighbors.push([x, ny]);
-    }
-  }
-  return neighbors;
 }
 
 var MAX_VALUES = {};
@@ -342,7 +261,6 @@ function solve(games, maxMoveTime, record) {
   var direction = -1;
   while (true) {
     var maxDirection = getMaxAction(board, depth++, startTime, maxMoveTime);
-    //console.log(depth, getDirectionName(maxDirection));
     if (maxDirection >= 0) {
       direction = maxDirection;
     } else {
