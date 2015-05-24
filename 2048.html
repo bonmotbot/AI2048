@@ -16,6 +16,11 @@
   text-decoration: none;
 }
 
+.disabled {
+  -webkit-filter: grayscale(100%);
+  -moz-filter: grayscale(100%);
+}
+
 body {
 	text-align: center;
 }
@@ -29,10 +34,18 @@ body {
 </head>
 <body>
 	<p class="desc">drag to bookmark bar</p>
-	<a class="round" href="javascript:(function(){function B(){for(var a=document.getElementsByClassName('tile'),d=[[],[],[],[]],b=0;b<a.length;b++){var c=a[b].className,g=Number(c.match(/tile-(\d+)/)[1]),c=c.match(/tile-position-(\d)-(\d)/);d[c[1]-1][c[2]-1]=g}return d}function u(a){var d=new Event('keydown',{bubbles:!0});d.which=37+a;document.body.dispatchEvent(d)}function v(a,d){switch(d){case m.b:a=p(a);break;case m.c:a=r(p(a));break;case m.a:a=r(a)}for(var b=a,c=[[],[],[],[]],g=0;4>g;g++)for(var f=null,e=c[g],h=0;4>h;h++){var k=
-	b[g][h];k&amp;&amp;(k!=f?(f=k,e.push(k)):(f=null,e[e.length-1]*=2))}a=c;switch(d){case m.b:a=p(a);break;case m.c:a=p(r(a));break;case m.a:a=r(a)}return a}function r(a){for(var d=[[],[],[],[]],b=0;4>b;b++)for(var c=0;4>c;c++)d[b][c]=a[b][3-c];return d}function p(a){for(var d=[[],[],[],[]],b=0;4>b;b++)for(var c=0;4>c;c++)d[b][c]=a[c][b];return d}function w(a,d){for(var b=0;4>b;b++)for(var c=0;4>c;c++)if(a[b][c]!=d[b][c])return!1;return!0}function x(a){for(var d=[[],[],[],[]],b=0;4>b;b++)for(var c=0;4>c;c++)d[b][c]=
-	a[b][c];return d}function y(a){for(var d=0,b=0,c=0;4>c;c++)for(var g=0;4>g;g++)if(a[c][g]){var f=a[c][g];f>d&amp;&amp;(d=f);b+=f*f}else b+=4194304;return b}function C(a){for(var d=0,b=0;4>b;b++)for(var c=0;4>c;c++)d=Math.max(d,a[b][c]||0);return d}function D(a,d,b,c){t={};for(var g=0,f=-1,e=0;4>e;e++){var h=v(a,e);if(!w(h,a)){h=z(h,d,b,c);if(0>h)return-1;h>g&amp;&amp;(g=h,f=e)}}return f}function z(a,d,b,c){if(!d)return y(a);if(Date.now()-b>c)return-1;for(var g=[],f=0;4>f;f++)for(var e=0;4>e;e++)if(!a[f][e]){var h=
-	x(a);h[f][e]=2;var k=x(a);k[f][e]=4;g.push(h,k)}if(!g)return y(a);for(f=a=0;f<g.length;f++){if(Date.now()-b>c)return-1;a:{var e=g[f],h=d-1,k=b,m=c,n;n='';for(var q=0;4>q;q++)for(var l=0;4>l;l++)n+=(e[q][l]||0)+' ';n+=h;if(t[n])e=t[n];else{for(q=l=0;4>q;q++){if(Date.now()-k>m){e=-1;break a}var p=v(e,q);if(!w(p,e)){l=z(p,h,k,m);if(0>l){e=l;break a}l=Math.max(l)}}e=t[n]=l}}if(0>e)return e;a+=e}return a/g.length}function A(a,d){a=a||20;d=d||1E3;for(var b=B(),c=Date.now(),g=0,f=-1;;){var e=D(b,g++,c,d);
-	if(0<=e)f=e;else break}if(0>f){b=C(b);if(2048<=b){console.log('success at count '+a+' :)');return}console.log('failed  at '+b+' :(');a--;u(45)}else u(f);setTimeout(function(){1<a&amp;&amp;A(a,d)},100)}var m={b:0,f:1,c:2,a:3},t={};A(1E3,100)})();">2048 solver</a>
+	<a class="round disabled" id="bookmarklet">2048 solver</a>
+<script>
+function xhrListener () {
+  var bookmarklet = document.getElementById('bookmarklet');
+  bookmarklet.setAttribute('href', this.responseText);
+  bookmarklet.classlist.remove('disabled');
+}
+
+var xhr = new XMLHttpRequest();
+xhr.onload = xhrListener;
+xhr.open("get", "ai.js", true);
+xhr.send();
+</script>
 </body>
 </html>
