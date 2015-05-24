@@ -176,9 +176,8 @@ function getValue(board) {
   var dy = 0;
   for (var x = 0; x < 4; x++) {
     for (var y = 0; y < 4; y++) {
-      if (board[x][y]) {
-        var val = board[x][y];
-        value += val * val;
+      if (board[x][y] == 2048) {
+        value += 2048 * 2048;
       }
       if (x > 0) {
         dx += (board[x][y] || 0) - (board[x - 1][y] || 0);
