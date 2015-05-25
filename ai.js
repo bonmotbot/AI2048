@@ -254,7 +254,7 @@ function getMinValue(board, depth, startTime, maxMoveTime) {
 function solve(games, maxMoveTime, record) {
   games = games || 100;
   maxMoveTime = maxMoveTime || 1e2;
-  record = record || {wins: 0, losses: 0};
+  record = record || {'wins': 0, 'games': 0, 'maxTile': 0};
   var board = currentBoard();
   var startTime = Date.now();
   var depth = 0;
@@ -267,15 +267,14 @@ function solve(games, maxMoveTime, record) {
       break;
     }
   }
-  var max = getMaxTile(board);
-  if (max == 2048) {
-    games--;
-    record.wins++;
-    move(45);
-    console.log(record);
+  var winDialog = document.getElementsByClassName('game-won')[0];
+  if (winDialog) {
+    record['wins']++;
+    document.getElementsByClassName('keep-playing-button')[0].click();
   } else if (direction < 0) {
     games--;
-    record.losses++;
+    record['games']++;
+    record['maxTile'] = Math.max(record['maxTile'], getMaxTile(board));
     move(45);
     console.log(record);
   } else {
