@@ -177,7 +177,7 @@ function getMaxAction(board, depth, startTime, maxMoveTime) {
   for (var i = 0; i < 4; i++) {
     var option = moveBoard(board, i);
     if (!boardsEqual(option, board)) {
-      var minValue = getMinValue(option, depth, startTime, maxMoveTime);
+      var minValue = getMinValue(option, depth, -Infinity, Infinity, startTime, maxMoveTime);
       if (minValue < 0) {
         return -1;
       }
@@ -200,7 +200,7 @@ function getBoardKey(board, depth) {
   return value + depth;
 }
 
-function getMaxValue(board, depth, startTime, maxMoveTime) {
+function getMaxValue(board, depth, alpha, beta, startTime, maxMoveTime) {
   var key = getBoardKey(board, depth);
   if (MAX_VALUES[key]) {
     return MAX_VALUES[key];
@@ -212,18 +212,22 @@ function getMaxValue(board, depth, startTime, maxMoveTime) {
     }
     var option = moveBoard(board, i);
     if (!boardsEqual(option, board)) {
-      var minValue = getMinValue(option, depth, startTime, maxMoveTime);
+      var minValue = getMinValue(option, depth, alpha, beta, startTime, maxMoveTime);
       if (minValue < 0) {
         return minValue;
       }
+      if (minValue >= beta) {
+        return minValue;
+      }
       max = Math.max(max, minValue);
+      alpha = Math.max(alpha, max);
     }
   }
   MAX_VALUES[key] = max;
   return max;
 }
 
-function getMinValue(board, depth, startTime, maxMoveTime) {
+function getMinValue(board, depth, alpha, beta, startTime, maxMoveTime) {
   if (!depth) {
     return getValue(board);
   }
@@ -239,11 +243,15 @@ function getMinValue(board, depth, startTime, maxMoveTime) {
     if (Date.now() - startTime > maxMoveTime) {
       return -1;
     }
-    var maxValue = getMaxValue(options[i], depth - 1, startTime, maxMoveTime);
+    var maxValue = getMaxValue(options[i], depth - 1, alpha, beta, startTime, maxMoveTime);
     if (maxValue < 0) {
       return maxValue;
     }
+    if (maxValue <= alpha) {
+      return maxValue;
+    }
     min = Math.min(min, maxValue);
+    beta = Math.min(beta, min);
   }
   return min;
 }
@@ -251,7 +259,13 @@ function getMinValue(board, depth, startTime, maxMoveTime) {
 function solve(games, maxMoveTime, record) {
   games = games || 100;
   maxMoveTime = maxMoveTime || 1e2;
-  record = record || {'wins': 0, 'games': 0, 'maxTile': 0};
+  record = record || {
+    'wins': 0,
+    'games': 0,
+    'maxTile': 0,
+    'totalMoves': 0,
+    'averageDepth': 0
+  };
   var board = currentBoard();
   var startTime = Date.now();
   var depth = 0;
@@ -264,6 +278,10 @@ function solve(games, maxMoveTime, record) {
       break;
     }
   }
+  var n = record['totalMoves'];
+  var average = record['averageDepth'];
+  record['averageDepth'] = n / (n + 1) * average + depth / (n + 1);
+  record['totalMoves']++;
   var winDialog = document.getElementsByClassName('game-won')[0];
   if (winDialog) {
     record['wins']++;
