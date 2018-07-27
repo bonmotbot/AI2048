@@ -4,7 +4,7 @@
 <title>2048 Bookmarklet</title>
 <link rel="icon" type="image/png" href="icon.png" />
 <style>
-@import url(http://fonts.googleapis.com/css?family=Karla);
+@import url(//fonts.googleapis.com/css?family=Karla);
 
 .round {
   border-radius: 50px;
@@ -45,7 +45,7 @@ xhr.send();
 function jsLoad() {
   var xhr = new XMLHttpRequest();
   xhr.onload = jsCompiled;
-  xhr.open("POST", "http://closure-compiler.appspot.com/compile", true);
+  xhr.open("POST", "https://closure-compiler.appspot.com/compile", true);
   xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
   xhr.send("compilation_level=ADVANCED_OPTIMIZATIONS"
     + "&output_format=text"
